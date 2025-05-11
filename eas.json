@@ -1,0 +1,27 @@
+{
+  "build": {
+    "dapp-store": {
+      "channel": "production",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "test": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "test"
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease",
+        "withoutCredentials": false
+      },
+      "developmentClient": false,
+      "channel": "production"
+    }
+  }
+}
