@@ -1,6 +1,9 @@
 import { para } from "@/client/para";
+import { cleanNumber } from "./miscfunctions.ts/extrafunctions";
 
-const handleUserRegistration = async (type: "email" | "phone", email?: string, countryCode?: string, phone?: string,) => {
+const handleUserRegistration = async ({ type, email, countryCode, phone, }: { type: "email" | "phone", email?: string, countryCode?: string, phone?: string, }) => {
+
+
     let userExists = false;
     if (type === "email") {
         if (!email) {
@@ -18,8 +21,8 @@ const handleUserRegistration = async (type: "email" | "phone", email?: string, c
             userExists = await para.checkIfUserExists({ email: email ?? "" });
         } else {
             userExists = await para.checkIfUserExistsByPhone({
-                countryCode: '+234',
-                phone: '8132532430'
+                countryCode: countryCode ?? "",
+                phone: cleanNumber(phone ?? "")
             });
         }
 
@@ -28,22 +31,33 @@ const handleUserRegistration = async (type: "email" | "phone", email?: string, c
                 await para.login({ email: email ?? "" });
             } else {
                 await para.initiateUserLoginForPhone({
-                    countryCode: '+234',
-                    phone: '8132532430'
+                    countryCode: countryCode ?? "",
+                    phone: cleanNumber(phone ?? "")
                 });
             }
-            return true; // User logged in
+            return {
+                status: true,
+                message: "User Registered Already",
+                action: "login",
+            }; // User logged in
         }
 
         if (type === "email") {
             await para.createUser({ email: email ?? "" });
+
         } else {
             await para.createUserByPhone({
                 countryCode: countryCode ?? "",
                 phone: phone ?? ""
             });
+
         }
-        return false
+
+        return {
+            status: true,
+            message: "User Registered Successfully",
+            action: "verification",
+        };
 
     } catch (error) {
         console.log(error);

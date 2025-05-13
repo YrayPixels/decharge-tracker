@@ -115,9 +115,6 @@ const openURL = async (url: string) => {
 };
 export {
     cleanNumber,
-
-
     formatDate, keypairSign,
-
     openURL, shortenPub, showToast
 };

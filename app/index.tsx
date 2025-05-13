@@ -1,8 +1,9 @@
 import Buttons from "@/components/ButtonComp";
 import CText from "@/components/TextComp";
+import { delay } from "@/utils/miscfunctions.ts";
 import { ImageBackground } from "expo-image";
 import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, View } from "react-native";
 
 
@@ -42,6 +43,15 @@ export default function Index() {
     const index = Math.round(contentOffsetX / width);
     setCurrentIndex(index);
   };
+
+
+  useEffect(() => {
+
+    delay(1500)
+
+    router.replace('/dashboard')
+
+  }, [])
 
 
   return (

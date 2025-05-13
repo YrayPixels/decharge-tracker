@@ -3,12 +3,12 @@ import CText from "@/components/TextComp";
 import { useKeyboard } from "@/utils/context/KeyboardContext";
 import { useThemeContext } from "@/utils/context/ThemeContext";
 import { delay } from "@/utils/miscfunctions.ts";
-import { cleanNumber } from "@/utils/miscfunctions.ts/extrafunctions";
+import { handleUserRegistration } from "@/utils/parafunctions";
 import AppSettings from "@/utils/store/settingsstore";
 import UserItem from "@/utils/store/userstore";
 import WalletItem from "@/utils/store/wallet";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
 // import { CountryPickerModal } from "react-native-country-code-select";
 
@@ -20,15 +20,19 @@ import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-n
 function Voicereg() {
   const { isKeyboardVisible } = useKeyboard()
   const [currentState, setCurrentState] = useState<'verify-phrase' | "start-wallet" | "sign-up" | "set-pin" | "">('')
+  const [loginType, setLoginType] = useState('number')
+
 
   const [selectedValue, setSelectedValue] = useState(
-    { "callingCode": ["234"], "countryInitials": "NG", "name": "Nigeria", "region": "Africa", "subregion": "Western Africa" }
+    { "callingCode": "234", "countryInitials": "NG", "name": "Nigeria", "region": "Africa", "subregion": "Western Africa" }
   );
 
   const [isVisible, setIsVisible] = useState(false);
   const [userDetails, setUserDetails] = useState({
     username: "",
     mobileNumber: "",
+    emailAddress: "",
+    countryCode: "1",
   })
 
   const [otpValue, setOtpValue] = useState('')
@@ -38,23 +42,10 @@ function Voicereg() {
   const { isDarkMode } = useThemeContext()
 
 
-  useEffect(() => {
-    if (user) {
-      setUserDetails({
-        username: user.username,
-        mobileNumber: user.mobileNumber
-      })
-      setCurrentState('start-wallet')
-    }
-  }, [user])
 
 
-
-  const saveUserToDB = async () => {
+  const mobileNumberSignup = async () => {
     const fields = [];
-    if (userDetails.username === "") {
-      fields.push("Username");
-    }
     if (userDetails.mobileNumber === "") {
       fields.push("Mobile Number");
     }
@@ -65,10 +56,16 @@ function Voicereg() {
     setLoading(true)
     delay(1000)
 
-    const data = {
-      username: userDetails.username,
-      phone_number: "+" + selectedValue.callingCode + cleanNumber(userDetails.mobileNumber)
-    }
+
+
+    const response = await handleUserRegistration({
+      type: "phone",
+      countryCode: userDetails.countryCode,
+      phone: userDetails.mobileNumber,
+    })
+
+    console.log(response)
+
     // const response = await registerUser(data.username, data.phone_number)
     // if (response.status !== false) {
     //   setCurrentState('set-pin')
@@ -77,28 +74,33 @@ function Voicereg() {
     //   setToast(response.message, 'error')
     //   setLoading(false)
     // }
+    setLoading(false)
+
   }
 
-  const verifyOtp = async () => {
-    if (otpValue.length < 6) {
-      setToast('Invalid Otp', 'error')
-      return;
+  const emailSignup = async () => {
+
+    const fields = [];
+    if (userDetails.emailAddress === "") {
+      fields.push("Email Address");
     }
+    if (fields.length > 0) {
+      setToast(`${fields.join(',')} required`, 'error')
+      return
+    }
+
     setLoading(true)
-    // const response = await verifyCode(otpValue, userDetails.username)
-    // if (response.status !== false) {
-    //   setToast("Verification Successfull", 'success')
-    //   setUser({
-    //     username: userDetails.username,
-    //     mobileNumber: userDetails.mobileNumber,
-    //     pin: "",
-    //   })
-    //   setCurrentState('start-wallet')
-    //   setLoading(false)
-    // } else {
-    //   setToast(response.message, 'error')
-    //   setLoading(false)
-    // }
+    delay(1000)
+
+    const response = await handleUserRegistration({
+      type: "email",
+      email: userDetails.emailAddress,
+    })
+
+    console.log(response)
+
+
+    setLoading(false)
   }
 
 
@@ -113,45 +115,74 @@ function Voicereg() {
         </View>
 
         <KeyboardAvoidingView className="bg-grey dark:bg-accent rounded-3xl gap-y-3">
-          <View className="bg-white dark:bg-accent h-fit py-3 rounded-2xl" >
-            <TextInput
-              className=" p-4 py-5 text-dark dark:text-white"
-              value={userDetails.username}
-              placeholderTextColor={isDarkMode ? "white" : "black"}
-              onChangeText={(text) => {
-                setUserDetails({ ...userDetails, username: text })
-              }}
-              placeholder={`enter a username`}
-            />
-            <View className="border-b border-gray-200" />
+          {loginType === 'email' ?
             <View className="flex flex-row px-4 justify-between items-center">
-              <TouchableOpacity onPress={() => {
-                setIsVisible(true);
-              }}>
-                <CText style={{ fontFamily: 'bold' }}>+{selectedValue.callingCode}</CText>
-              </TouchableOpacity>
               <TextInput
+                style={{ fontFamily: "bold" }}
+                className="p-4 py-5 flex-1  text-dark dark:text-white"
+                value={userDetails.emailAddress}
+                placeholderTextColor={isDarkMode ? "white" : "black"}
+                onChangeText={(text) => {
+                  setUserDetails({ ...userDetails, emailAddress: text })
+                }}
+                placeholder={`enter your email address`}
+              />
+            </View>
+
+            :
+
+            <View className="flex flex-row px-4 justify-between items-center">
+
+              <TextInput
+                style={{ fontFamily: "bold" }}
+                className="p-4 py-5 w-2/12 text-dark border-e-2 border-buttons dark:text-white"
+                value={userDetails.countryCode}
+                keyboardType="phone-pad"
+                placeholderTextColor={isDarkMode ? "white" : "black"}
+                onChangeText={(text) => {
+                  setUserDetails({ ...userDetails, countryCode: text })
+                }}
+                placeholder={`+1`}
+              />
+
+
+              <TextInput
+                style={{ fontFamily: "bold" }}
                 className="p-4 py-5 flex-1 text-dark dark:text-white"
                 value={userDetails.mobileNumber}
+                keyboardType="phone-pad"
                 placeholderTextColor={isDarkMode ? "white" : "black"}
                 onChangeText={(text) => {
                   setUserDetails({ ...userDetails, mobileNumber: text })
                 }}
-                placeholder={`enter your phone number`}
+                placeholder={`enter a phone number`}
               />
+
+
             </View>
-          </View>
+
+          }
+
+
         </KeyboardAvoidingView>
-        <View>
+        <View className="gap-y-4">
 
-          <Buttons buttonType="pressable" onPress={() => saveUserToDB()} className="" text={isLoading ? "loading" : "Sign up"} type="primary" />
-          <View className="px-4 my-3">
-            <CText className="text-[1rem] text-center">
-              I have read, understood and agreed to the <CText style={{ fontFamily: 'bold' }} textColor="text-purple">Terms&Conditions </CText>and
-              <CText style={{ fontFamily: 'bold' }} textColor="text-purple"> Privacy Policy</CText>
+          <Buttons buttonType="pressable" onPress={() => loginType === 'number' ? mobileNumberSignup() : emailSignup()} className="" text={isLoading ? "loading" : "Sign up"} type="primary" />
 
-            </CText>
+
+
+          <View className="py-2 flex flex-row justify-center items-center gap-x-2">
+
+            <TouchableOpacity
+              className="border-e-2 border-buttons pe-2"
+              onPress={() => setLoginType('number')}
+            ><CText style={{ fontFamily: 'bold' }} textColor="text-buttons">Sign up with mobile number</CText></TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setLoginType('email')}
+            ><CText style={{ fontFamily: 'bold' }} textColor="text-buttons">Sign up with email</CText></TouchableOpacity>
           </View>
+
 
 
         </View>
@@ -159,17 +190,33 @@ function Voicereg() {
 
       </View >
       {!isKeyboardVisible &&
-        <View className="absolute bottom-10 flex w-full flex-row justify-center items-center gap-x-2">
-          <CText className="text-[1.125em] flex items-center flex-row">Already have an Account?</CText>
-          <TouchableOpacity
-            onPress={() => router.push('/auth/login')}
-          >
-            <CText style={{ fontFamily: 'bold' }} textColor="text-purple" className="text-[1.125em]">Log in</CText></TouchableOpacity>
+
+        <View className="gap-y-4 absolute bottom-10 ">
+
+
+          <View className="flex w-full flex-row justify-center items-center gap-x-2">
+
+            <CText className="text-[1.125em] flex items-center flex-row">Already have an Account?</CText>
+            <TouchableOpacity
+              onPress={() => router.push('/auth/login')}
+            >
+              <CText style={{ fontFamily: 'bold' }} textColor="text-buttons" className="text-[1.125em]">Log in</CText></TouchableOpacity>
+          </View>
+
+          <View className="px-4 my-3">
+            <CText className="text-[1rem] text-center">
+              I have read, understood and agreed to the <CText style={{ fontFamily: 'bold' }} textColor="text-buttons">Terms&Conditions </CText>and
+              <CText style={{ fontFamily: 'bold' }} textColor="text-buttons"> Privacy Policy</CText>
+
+            </CText>
+          </View>
         </View>
+
       }
 
 
       {/* <CountryPickerModal
+
         isVisible={isVisible}
         onClose={() => setIsVisible(false)}
         //@ts-ignore

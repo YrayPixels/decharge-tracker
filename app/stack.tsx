@@ -4,9 +4,8 @@ import IconLibrary from "@/utils/context/icons";
 import { useThemeContext } from "@/utils/context/ThemeContext";
 import AppSettings from "@/utils/store/settingsstore";
 
-import { Image } from "expo-image";
 import { Stack } from "expo-router";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 
 export default function StackView() {
@@ -16,7 +15,9 @@ export default function StackView() {
 
     const LoadingScreen = () => (
         <View className='h-full absolute w-full z-50 bg-white/55 dark:bg-black/55 flex justify-center items-center '>
-            <Image source={require('@/assets/images/icon.png')} alt="Security image" style={{ height: 70, width: 70 }} contentFit="contain" />
+
+            <ActivityIndicator size="large" color="#0000ff" />
+            {/* <Image source={require('@/assets/images/icon.png')} alt="Security image" style={{ height: 70, width: 70 }} contentFit="contain" /> */}
         </View>
     );
 

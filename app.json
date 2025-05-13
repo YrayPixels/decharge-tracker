@@ -37,6 +37,13 @@
         "favicon": "./assets/images/favicon.png"
       },
       "plugins": [
+        [
+          "@rnmapbox/maps",
+          {
+            "RNMapboxMapsVersion": "11.8.0",
+            "RNMapboxMapsDownloadToken": "sk.eyJ1IjoibWFza3lyYXkiLCJhIjoiY21hbThvMHpqMDZmMDJsczh6ZmJpOHN0ayJ9.zrujVFFMprJQaZXAPAijBQ"
+          }
+        ],
         "expo-router",
         [
           "expo-splash-screen",
@@ -45,6 +52,12 @@
             "imageWidth": 200,
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
+          }
+        ],
+        [
+          "expo-location",
+          {
+            "locationWhenInUsePermission": "Show current location on map."
           }
         ]
       ],

@@ -88,27 +88,27 @@ const AppSettings = create(
             setLoading: async (state) => {
 
 
-                // const previousTimeout = get().loadingTimeout;
-                // if (previousTimeout) {
-                //     clearTimeout(previousTimeout);
-                // }
+                const previousTimeout = get().loadingTimeout;
+                if (previousTimeout) {
+                    clearTimeout(previousTimeout);
+                }
 
                 // Update loading state
                 set({ isLoading: state });
 
-                // if (state) {
-                //     // Set a new timeout and store its ID
-                //     const timeoutId = setTimeout(() => {
-                //         set({ isLoading: false, loadingTimeout: null });
-                //         get().setToast('An Error occured!!', 'error')
-                //     }, 20000);
+                if (state) {
+                    // Set a new timeout and store its ID
+                    const timeoutId = setTimeout(() => {
+                        set({ isLoading: false, loadingTimeout: null });
+                        get().setToast('An Error occured!!', 'error')
+                    }, 20000);
 
-                //     set({ loadingTimeout: timeoutId });
-                // } else {
-                //     // If manually turning off loading, clear any pending timeout
-                //     set({ loadingTimeout: null });
-                // }
-                // await new Promise(resolve => setTimeout(resolve, 100));
+                    set({ loadingTimeout: timeoutId });
+                } else {
+                    // If manually turning off loading, clear any pending timeout
+                    set({ loadingTimeout: null });
+                }
+                await new Promise(resolve => setTimeout(resolve, 100));
 
             }
 
