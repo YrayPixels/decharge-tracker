@@ -1,4 +1,4 @@
-[
+export const obdData = [
   {
     "timestamp": "2025-05-01T09:00:00Z",
     "vehicle_id": "CAR001",

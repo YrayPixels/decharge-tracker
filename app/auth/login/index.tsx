@@ -1,4 +1,5 @@
 import Buttons from "@/components/ButtonComp";
+import Otpsheet from "@/components/sheets/OtpSheets";
 import CText from "@/components/TextComp";
 import { useThemeContext } from "@/utils/context/ThemeContext";
 import { delay } from "@/utils/miscfunctions.ts";
@@ -8,7 +9,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
-// import { CountryPickerModal } from "react-native-country-code-select";
+import { CountryPickerModal } from "react-native-country-code-select";
 
 
 
@@ -29,8 +30,7 @@ function Login() {
   const [loginType, setLoginType] = useState('number')
 
   const [otpValue, setOtpValue] = useState('')
-  // const { setUser, user, session } = UserItem();
-  // const { keypair, updateKeypair, publicKey } = WalletItem()
+
   const { setLoading, isLoading, setToast, openWithAuth } = AppSettings()
   const [currentState, setCurrentState] = useState<'verify-phrase' | "start-wallet" | "sign-up" | "set-pin" | "">('')
 
@@ -92,42 +92,14 @@ function Login() {
     // }
   }
 
-  // const verifyOtp = async () => {
-  //   if (otpValue.length < 6) {
-  //     setToast('Invalid Otp', 'error')
-  //     return;
-  //   }
-  //   setLoading(true)
-  //   const response = await verifyCode(otpValue, userDetails.username)
-  //   if (response.status !== false) {
-  //     setToast("Verification Successfull", 'success')
+  const verifyOtp = async () => {
+    if (otpValue.length < 6) {
+      setToast('Invalid Otp', 'error')
+      return;
+    }
+    setLoading(true)
 
-  //     //check if the publick key stored is the same as the address coming, route to dashboard
-  //     if (publicKey !== null && (publicKey.toString() === userDetails.wallet_address)) {
-  //       setUser({
-  //         username: userDetails.username,
-  //         mobileNumber: userDetails.mobileNumber,
-  //         pin: "",
-  //       })
-  //       router.replace('/dashboard')
-  //       return;
-  //     } else {
-  //       setUser({
-  //         username: userDetails.username,
-  //         mobileNumber: userDetails.mobileNumber,
-  //         pin: "",
-  //       })
-  //       setCurrentState('start-wallet')
-  //       setLoading(false)
-  //       return;
-  //     }
-
-
-  //   } else {
-  //     setToast(response.message, 'error')
-  //     setLoading(false)
-  //   }
-  // }
+  }
 
   return (
     <View
@@ -280,19 +252,20 @@ function Login() {
 
 
 
-      {/* <CountryPickerModal
+      <CountryPickerModal
         isVisible={isVisible}
         onClose={() => setIsVisible(false)}
         //@ts-ignore
         onSelect={(e) => setSelectedValue(e)}
-      /> */}
+      />
 
-      {/*
       <Otpsheet
         open={currentState === 'set-pin'}
         verifyOtp={verifyOtp}
         setOtpValue={(text) => setOtpValue(text)}
       />
+
+      {/*
 
       <WalletSheet open={currentState === 'start-wallet'} /> */}
 
