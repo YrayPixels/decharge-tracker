@@ -5,6 +5,7 @@ import { DMSans_400Regular, DMSans_500Medium, DMSans_700Bold, useFonts } from "@
 import { SplashScreen } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import '../global.css';
 import StackView from "./stack";
@@ -65,15 +66,19 @@ export default function RootLayout() {
   }
 
   return (
-    <KeyboardProvider>
-      <ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+
+      <KeyboardProvider>
+        <ThemeProvider>
 
 
-        <SafeAreaView style={{ flex: 1 }}>
-          <StackView />
-        </SafeAreaView>
-      </ThemeProvider>
-    </KeyboardProvider>
+          <SafeAreaView style={{ flex: 1 }}>
+            <StackView />
+          </SafeAreaView>
+        </ThemeProvider>
+      </KeyboardProvider>
+    </GestureHandlerRootView>
+
 
 
   )

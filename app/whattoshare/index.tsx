@@ -1,15 +1,19 @@
 import CText from '@/components/TextComp';
 import IconLibrary from '@/utils/context/icons';
+import AppSettings from '@/utils/store/settingsstore';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, ScrollView, StatusBar, Switch, View } from 'react-native';
 
 export default function SettingsScreen() {
-    const [shareSpeed, setShareSpeed] = useState(true);
-    const [shareRPM, setShareRPM] = useState(true);
-    const [shareFuel, setShareFuel] = useState(true);
-    const [shareTemp, setShareTemp] = useState(false);
-    const [shareLocation, setShareLocation] = useState(false);
+    const { dataShare, setDataShare } = AppSettings()
+
+
+    const handleDataShare = (key: keyof typeof dataShare, value: boolean) => {
+        setDataShare({ ...dataShare, [key]: value })
+    }
+
+
 
     return (
         <View className="bg-buttons h-full">
@@ -25,11 +29,11 @@ export default function SettingsScreen() {
                 <CText style={{ fontFamily: 'bold' }} textColor="text-buttons" className="text-[2.5rem] text-center mb-6">Data Sharing</CText>
 
                 <View className="gap-y-2 w-full">
-                    <SettingItem label="Share Speed" value={shareSpeed} onValueChange={setShareSpeed} />
-                    <SettingItem label="Share RPM" value={shareRPM} onValueChange={setShareRPM} />
-                    <SettingItem label="Share Fuel Level" value={shareFuel} onValueChange={setShareFuel} />
-                    <SettingItem label="Share Engine Temp" value={shareTemp} onValueChange={setShareTemp} />
-                    <SettingItem label="Share Location" value={shareLocation} onValueChange={setShareLocation} />
+                    <SettingItem label="Share Speed" value={dataShare.speed} onValueChange={() => handleDataShare('speed', !dataShare.speed)} />
+                    <SettingItem label="Share RPM" value={dataShare.rpm} onValueChange={() => handleDataShare('rpm', !dataShare.rpm)} />
+                    <SettingItem label="Share Fuel Level" value={dataShare.fuel} onValueChange={() => handleDataShare('fuel', !dataShare.fuel)} />
+                    <SettingItem label="Share Engine Temp" value={dataShare.temp} onValueChange={() => handleDataShare('temp', !dataShare.temp)} />
+                    <SettingItem label="Share Location" value={dataShare.location} onValueChange={() => handleDataShare('location', !dataShare.location)} />
                 </View>
             </ScrollView>
         </View>

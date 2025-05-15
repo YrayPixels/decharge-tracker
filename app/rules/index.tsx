@@ -23,8 +23,8 @@ export default function RulesScreen() {
                     <RuleItem text="Over 100 kmph" points="-5" positive={false} />
                     <RuleItem text="Optimal RPM (1000–3000)" points="+3" positive={true} />
                     <RuleItem text="Overrev (over 4000 RPM)" points="-3" positive={false} />
-                    <RuleItem text="Healthy engine temp (less than 100°C)" points="+1" positive={true} />
-                    <RuleItem text="Overheating (greater than 100°C)" points="-3" positive={false} />
+                    <RuleItem text="Healthy engine temp (less than 100°F)" points="+1" positive={true} />
+                    <RuleItem text="Overheating (greater than 100°F)" points="-3" positive={false} />
                     <RuleItem text="No DTC Code" points="+2" positive={true} />
                     <RuleItem text="Fault Code present" points="-10" positive={false} />
                 </View>

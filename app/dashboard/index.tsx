@@ -1,37 +1,41 @@
 import FuelBar from "@/components/AnimatedBattery";
+import AnimatedPoint from "@/components/AnimatedPoints";
+
 import { Base } from "@/components/Navigation/Base";
 import CText from "@/components/TextComp";
 import { obdData } from "@/synthetic_obd_data_24h";
 import IconLibrary from "@/utils/context/icons";
+import { calculateEarnings } from "@/utils/miscfunctions.ts/earnings";
+import AppSettings from "@/utils/store/settingsstore";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Dimensions, Pressable, ScrollView, View } from "react-native";
+//@ts-ignore
 import RNSpeedometer from 'react-native-speedometer';
-
-{/* 
- {
-    "timestamp": "2025-05-01T09:00:00Z",
-    "vehicle_id": "CAR001",
-    "speed_kmph": 72.14,
-    "engine_rpm": 2671,
-    "fuel_level_pct": 61.8,
-    "engine_temp_c": 74.6,
-    "lat": 12.976136,
-    "lon": 77.595407,
-    "dtc_code": ""
-  },
-*/}
 
 
 /**
   * What should be done here
- Dashboard Page
+    Dashboard Page
   */
 function Dashboard() {
-
+    const { points, updatePoints } = AppSettings()
     const [activeData, setActiveData] = useState<any>(null)
-    useEffect(() => {
+    const [pendingAnimations, setPendingAnimations] = useState<{ points: number; id: number }[]>([])
+    const carRef = useRef<View>(null);
+    const pointsRef = useRef<View>(null);
+    const animationIdCounter = useRef(0);
 
+    const handlePointsEarned = (pointsEarned: number) => {
+        animationIdCounter.current += 1;
+        setPendingAnimations(prev => [...prev, { points: pointsEarned, id: animationIdCounter.current }]);
+    };
+
+    const removeAnimation = (id: number) => {
+        setPendingAnimations(prev => prev.filter(anim => anim.id !== id));
+    };
+
+    useEffect(() => {
         function wait(ms: number) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
@@ -44,18 +48,19 @@ function Dashboard() {
                 const next = dataArray[i + 1] ? new Date(dataArray[i + 1].timestamp) : null as any;
 
                 if (next) {
-                    const delayMs = next - current; // difference in milliseconds
+                    const delayMs = next - current;
                     await wait(5000);
                 }
             }
         }
-        // Usage:
+
         pingBasedOnTimestamps(obdData, (data: any) => {
+            const earnings = calculateEarnings(data)
+            updatePoints(earnings.pointsEarned)
+            handlePointsEarned(earnings.pointsEarned)
             setActiveData(data)
         });
-
     }, [])
-
 
     return (
         <View
@@ -66,15 +71,20 @@ function Dashboard() {
                     <View>
                         <CText className="text-[20px]" style={{ fontFamily: 'bold' }}>Tesla Captain Electro</CText>
                     </View>
-
-                    <View className="w-10 h-10 rounded-full bg-white overflow-hidden" >
-                        <Image source={require('@/assets/images/avatar.jpeg')}
-                            contentFit="cover"
-                            style={{ width: '100%', height: '100%' }} />
+                    <View ref={pointsRef} className="flex flex-row justify-between items-center gap-x-2" >
+                        <CText className="text-[20px]" style={{ fontFamily: 'bold' }}>
+                            {points} DE
+                        </CText>
+                        <View className="w-10 h-10 rounded-full bg-white overflow-hidden" >
+                            <Image source={require('@/assets/images/avatar.jpeg')}
+                                contentFit="cover"
+                                style={{ width: '100%', height: '100%' }} />
+                        </View>
                     </View>
+
                 </View>
 
-                <View className="w-full flex flex-row justify-end items-end h-[250px]">
+                <View ref={carRef} className="w-full flex flex-row justify-end items-end h-[250px]">
                     <Image
                         source={require('@/assets/cars/front.png')} style={{ width: "100%", height: "100%" }}
                         contentFit="contain"
@@ -86,6 +96,16 @@ function Dashboard() {
                     />
                 </View>
 
+                {pendingAnimations.map(({ points: earnedPoints, id }) => (
+                    <AnimatedPoint
+
+                        key={id}
+                        points={earnedPoints}
+                        startPosition={{ x: Dimensions.get('window').width / 2, y: 250 }}
+                        endPosition={{ x: Dimensions.get('window').width - 100, y: 20 }}
+                        onComplete={() => removeAnimation(id)}
+                    />
+                ))}
 
                 <ScrollView
 
@@ -176,7 +196,7 @@ function Dashboard() {
 
                 </ScrollView>
 
-                {/* <MapBox mapdata={activeData} /> */}
+
                 <Base />
 
             </View >

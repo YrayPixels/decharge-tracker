@@ -16,6 +16,8 @@ interface Settings {
     createdWallet: boolean,
     updateNotifications: (newNotifications: boolean) => void;
     setDefault: () => void;
+    points: number,
+    updatePoints: (newPoints: number) => void,
 
     isLoading: boolean,
     setLoading: (state: boolean) => void
@@ -28,13 +30,45 @@ interface Settings {
     },
     setToast: (message: string, type: "success" | "error" | "info") => void
     setOpenWithAuth: (val: boolean) => void
+
+    dataShare: {
+        speed: boolean,
+        rpm: boolean,
+        fuel: boolean,
+        temp: boolean,
+        location: boolean,
+    }
+    setDataShare: (dataShare: {
+        speed: boolean,
+        rpm: boolean,
+        fuel: boolean,
+        temp: boolean,
+        location: boolean,
+    }) => void
 }
 
 
 const AppSettings = create(
     persist<Settings>(
         (set, get) => ({
+            points: 0,
+            updatePoints: (newPoints: number) => set({ points: get().points + newPoints }),
             openWithAuth: false,
+            dataShare: {
+                speed: true,
+                rpm: true,
+                fuel: true,
+                temp: true,
+                location: true,
+            },
+            setDataShare: (dataShare: {
+                speed: boolean,
+                rpm: boolean,
+                fuel: boolean,
+                temp: boolean,
+                location: boolean,
+            }) => set({ dataShare: { ...get().dataShare, ...dataShare } }),
+
             ek: {
                 value: "",
                 expiry: 0,

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "decharge-tracker",
+    "name": "DE+",
     "slug": "decharge-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,31 +26,13 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDpBJUZQujayxV4i3UtN4TeIevTP-1PoQw"
-        }
-      },
+      "config": {},
       "web": {
         "bundler": "metro",
         "output": "static",
         "favicon": "./assets/images/favicon.png"
       },
       "plugins": [
-        [
-          "@youssefhenna/expo-mapbox-navigation",
-          {
-            "accessToken": "sk.eyJ1IjoibWFza3lyYXkiLCJhIjoiY21hbThvMHpqMDZmMDJsczh6ZmJpOHN0ayJ9.zrujVFFMprJQaZXAPAijBQ",
-            "mapboxMapsVersion": "10.1.38"
-          }
-        ],
-        [
-          "@rnmapbox/maps",
-          {
-            "RNMapboxMapsVersion": "10.0.0",
-            "RNMapboxMapsDownloadToken": "sk.eyJ1IjoibWFza3lyYXkiLCJhIjoiY21hbThvMHpqMDZmMDJsczh6ZmJpOHN0ayJ9.zrujVFFMprJQaZXAPAijBQ"
-          }
-        ],
         "expo-router",
         [
           "expo-splash-screen",

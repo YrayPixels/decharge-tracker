@@ -1,12 +1,11 @@
 import Buttons from "@/components/ButtonComp";
+import Otpsheet from "@/components/sheets/OtpSheets";
 import CText from "@/components/TextComp";
 import { useKeyboard } from "@/utils/context/KeyboardContext";
 import { useThemeContext } from "@/utils/context/ThemeContext";
 import { delay } from "@/utils/miscfunctions.ts";
-import { handleUserRegistration } from "@/utils/parafunctions";
+import { handlePhoneVerification, handleUserRegistration, handleVerification } from "@/utils/parafunctions";
 import AppSettings from "@/utils/store/settingsstore";
-import UserItem from "@/utils/store/userstore";
-import WalletItem from "@/utils/store/wallet";
 import { router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
@@ -23,10 +22,6 @@ function Voicereg() {
   const [loginType, setLoginType] = useState('number')
 
 
-  const [selectedValue, setSelectedValue] = useState(
-    { "callingCode": "234", "countryInitials": "NG", "name": "Nigeria", "region": "Africa", "subregion": "Western Africa" }
-  );
-
   const [isVisible, setIsVisible] = useState(false);
   const [userDetails, setUserDetails] = useState({
     username: "",
@@ -36,8 +31,6 @@ function Voicereg() {
   })
 
   const [otpValue, setOtpValue] = useState('')
-  const { setUser, user } = UserItem();
-  const { keypair, updateKeypair, publicKey } = WalletItem()
   const { setLoading, isLoading, setToast } = AppSettings()
   const { isDarkMode } = useThemeContext()
 
@@ -64,7 +57,15 @@ function Voicereg() {
       phone: userDetails.mobileNumber,
     })
 
-    console.log(response)
+    if (response.status) {
+      if (response.action === 'login') {
+        router.replace('/dashboard')
+      } else {
+        setCurrentState('set-pin')
+      }
+    } else {
+      setToast(response.message, 'error')
+    }
 
     // const response = await registerUser(data.username, data.phone_number)
     // if (response.status !== false) {
@@ -97,10 +98,52 @@ function Voicereg() {
       email: userDetails.emailAddress,
     })
 
-    console.log(response)
+    if (response.status) {
+      if (response.action === 'login') {
+        router.replace('/dashboard')
+      } else {
+        setCurrentState('set-pin')
+      }
+
+    } else {
+      setToast(response.message, 'error')
+    }
+
+
 
 
     setLoading(false)
+  }
+
+
+  const verifyOtp = async () => {
+    if (otpValue.length < 6) {
+      setToast('Invalid Otp', 'error')
+      return;
+    }
+    setLoading(true)
+    delay(1000)
+
+    if (loginType === 'number') {
+      const response = await handlePhoneVerification(userDetails.countryCode, userDetails.mobileNumber, otpValue)
+
+      if (response) {
+
+        router.replace('/dashboard')
+      } else {
+        setToast("Invalid Otp", 'error')
+      }
+
+
+    } else {
+      const response = await handleVerification(userDetails.emailAddress, otpValue)
+
+      if (response) {
+        router.replace('/dashboard')
+      } else {
+        setToast("Invalid Otp", 'error')
+      }
+    }
   }
 
 
@@ -223,12 +266,12 @@ function Voicereg() {
         onSelect={(e) => setSelectedValue(e)}
       /> */}
 
-      {/* <Otpsheet
+      <Otpsheet
         open={currentState === 'set-pin'}
         verifyOtp={verifyOtp}
         setOtpValue={(text) => setOtpValue(text)}
       />
-
+      {/*
       <WalletSheet open={currentState === 'start-wallet'} /> */}
 
 

@@ -1,6 +1,5 @@
 import Buttons from "@/components/ButtonComp";
 import CText from "@/components/TextComp";
-import { delay } from "@/utils/miscfunctions.ts";
 import { ImageBackground } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -47,9 +46,9 @@ export default function Index() {
 
   useEffect(() => {
 
-    delay(1500)
+    // delay(1500)
 
-    router.replace('/dashboard')
+    // router.replace('/dashboard')
 
   }, [])
 

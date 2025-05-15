@@ -34,7 +34,6 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
-    "@rnmapbox/maps": "^10.1.38",
     "@ungap/structured-clone": "^1.3.0",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",

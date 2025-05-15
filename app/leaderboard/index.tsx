@@ -46,10 +46,10 @@ export default function LeaderboardScreen() {
             </View>
 
 
-            <ScrollView className="w-full flex-1 px-5 py-5 bg-white dark:bg-accent rounded-t-3xl">
+            <ScrollView className="w-full flex-1 px-5 py-5  bg-white dark:bg-accent rounded-t-3xl">
 
-                <CText style={{ fontFamily: 'bold' }} textColor="text-buttons" className="text-[2.5rem] text-center">Leaderboard</CText>
-                <View className="flex flex-row justify-center items-center gap-x-2">
+                <CText style={{ fontFamily: 'bold' }} textColor="text-buttons" className="text-[2.5rem] text-center mb-2">Leaderboard</CText>
+                <View className="flex flex-row  mb-3 justify-center items-center gap-x-2">
                     {sortUsersByPointsDescending(users).slice(0, 3).map((user, index) => (
 
                         <View key={index} className="flex flex-col justify-start  items-center">

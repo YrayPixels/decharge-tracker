@@ -7,11 +7,17 @@ const handleUserRegistration = async ({ type, email, countryCode, phone, }: { ty
     let userExists = false;
     if (type === "email") {
         if (!email) {
-            return false;
+            return {
+                status: false,
+                message: "Invalid Input",
+            };
         }
     } else {
         if (!countryCode || !phone) {
-            return false;
+            return {
+                status: false,
+                message: "Invalid Input",
+            };
         }
     }
 
@@ -61,6 +67,10 @@ const handleUserRegistration = async ({ type, email, countryCode, phone, }: { ty
 
     } catch (error) {
         console.log(error);
+        return {
+            status: false,
+            message: "Something went wrong",
+        };
     }
 };
 

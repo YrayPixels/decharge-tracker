@@ -3,7 +3,7 @@ import Otpsheet from "@/components/sheets/OtpSheets";
 import CText from "@/components/TextComp";
 import { useThemeContext } from "@/utils/context/ThemeContext";
 import { delay } from "@/utils/miscfunctions.ts";
-import { cleanNumber } from "@/utils/miscfunctions.ts/extrafunctions";
+import { handlePhoneVerification, handleUserRegistration, handleVerification } from "@/utils/parafunctions";
 import AppSettings from "@/utils/store/settingsstore";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -70,14 +70,48 @@ function Login() {
       }
       setLoading(true)
       delay(1000)
-      const data = {
-        phone_number: "+" + selectedValue.callingCode + cleanNumber(userDetails.mobileNumber)
+      const response = await handleUserRegistration({
+        type: "phone",
+        countryCode: userDetails.countryCode,
+        phone: userDetails.mobileNumber,
+      })
+
+      if (response.status) {
+        setCurrentState('set-pin')
+      } else {
+        setToast(response.message, 'error')
       }
 
-      console.log(data)
+      setLoading(false)
     } else {
 
-      console.log(userDetails.emailAddress)
+      const fields = [];
+      if (userDetails.emailAddress === "") {
+        fields.push("Email Address");
+      }
+      if (fields.length > 0) {
+        setToast(`${fields.join(',')} required`, 'error')
+        return
+      }
+      setLoading(true)
+      delay(1000)
+      const response = await handleUserRegistration({
+        type: "email",
+        email: userDetails.emailAddress,
+      })
+
+      if (response.status) {
+        if (response.action === 'login') {
+          router.replace('/dashboard')
+        } else {
+          setCurrentState('set-pin')
+        }
+
+      } else {
+        setToast(response.message, 'error')
+      }
+
+      setLoading(false)
     }
 
     // const response = await getCode(data.phone_number)
@@ -98,6 +132,28 @@ function Login() {
       return;
     }
     setLoading(true)
+    delay(1000)
+
+    if (loginType === 'number') {
+      const response = await handlePhoneVerification(userDetails.countryCode, userDetails.mobileNumber, otpValue)
+
+      if (response) {
+        router.replace('/dashboard')
+      } else {
+        setToast("Invalid Otp", 'error')
+      }
+
+
+    } else {
+      const response = await handleVerification(userDetails.emailAddress, otpValue)
+
+      if (response) {
+        router.replace('/dashboard')
+      } else {
+        setToast("Invalid Otp", 'error')
+      }
+    }
+
 
   }
 
