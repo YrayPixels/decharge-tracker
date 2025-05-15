@@ -19,6 +19,24 @@ type IconProps = {
 
 // Create a context wrapper component that provides themed icons
 const IconLibrary = {
+    people: (props: IconProps = {}) => {
+        const { isDarkMode } = useThemeContext();
+        return (
+            <MaterialIcons name="people" size={props.size || 18} color={props.color || (isDarkMode ? "white" : "black")} />
+        );
+    },
+    home: (props: IconProps = {}) => {
+        const { isDarkMode } = useThemeContext();
+        return (
+            <MaterialIcons name="home" size={props.size || 18} color={props.color || (isDarkMode ? "white" : "black")} />
+        );
+    },
+    settings: (props: IconProps = {}) => {
+        const { isDarkMode } = useThemeContext();
+        return (
+            <MaterialIcons name="settings" size={props.size || 18} color={props.color || (isDarkMode ? "white" : "black")} />
+        );
+    },
     external: (props: IconProps = {}) => {
         const { isDarkMode } = useThemeContext();
         return (

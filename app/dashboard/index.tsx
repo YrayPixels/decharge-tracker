@@ -1,5 +1,5 @@
 import FuelBar from "@/components/AnimatedBattery";
-import MapBox from "@/components/MapBox";
+import { Base } from "@/components/Navigation/Base";
 import CText from "@/components/TextComp";
 import { obdData } from "@/synthetic_obd_data_24h";
 import IconLibrary from "@/utils/context/icons";
@@ -90,7 +90,7 @@ function Dashboard() {
                 <ScrollView
 
                 >
-                    <View className="w-full mb-3 overflow-hidden left-0 rounded-2xl bg-accent ">
+                    <View className="w-full mb-3 overflow-hidden left-0 rounded-2xl bg-white shadow dark:bg-accent ">
                         <RNSpeedometer innerCycleStyle={{
                             backgroundColor: 'black',
                         }}
@@ -110,7 +110,7 @@ function Dashboard() {
                     </View>
 
                     <View className="flex mb-3 flex-row justify-center items-stretch gap-x-2">
-                        <View className="w-fit bg-accent rounded-2xl p-3 flex justify-center items-center">
+                        <View className="w-fit bg-white shadow dark:bg-accent rounded-2xl p-3 flex justify-center items-center">
                             <CText style={{ fontFamily: 'bold' }} className="text-[1.5rem]" textColor="text-buttons">Fuel Level</CText>
                             <View className="rounded-xl p-2 flex justify-center items-center">
                                 <FuelBar fuelLevelPct={activeData?.fuel_level_pct} />
@@ -119,7 +119,7 @@ function Dashboard() {
                         </View>
 
                         <View className="flex flex-col flex-1 justify-center items-start gap-y-2">
-                            <View className="h-[100px] overflow-hidden  w-full bg-accent rounded-2xl p-3 gap-y-3">
+                            <View className="h-[100px] overflow-hidden  w-full bg-white shadow dark:bg-accent rounded-2xl p-3 gap-y-3">
                                 <View className="w-[100%] h-[100%] absolute bottom-5 -right-20">
                                     <Image
                                         source={require('@/assets/images/rpm.png')} style={{ width: "100%", height: "100%" }}
@@ -132,7 +132,7 @@ function Dashboard() {
 
                             </View>
 
-                            <View className="h-[100px] flex flex-row justify-between items-start relative w-full bg-accent rounded-2xl p-3 gap-y-3">
+                            <View className="h-[100px] flex flex-row justify-between items-start relative w-full bg-white shadow dark:bg-accent rounded-2xl p-3 gap-y-3">
                                 <View>
                                     <CText style={{ fontFamily: 'bold' }} className="text-[1.5rem]" textColor="text-buttons">Temperature</CText>
                                     <CText className="text-[20px]">{activeData?.engine_temp_c}°F</CText>
@@ -154,18 +154,20 @@ function Dashboard() {
 
                     <Pressable
                         onPress={() => { }}
-                        className=" h-[100px] w-full bg-accent rounded-2xl gap-y-3 overflow-hidden">
+                        className=" h-[100px] w-full dark:bg-accent bg-white shadow rounded-2xl gap-y-3 overflow-hidden relative">
+                        <View className="overflow-hidden rounded-2xl" >
+                            <Image source={require('@/assets/images/map.jpeg')} style={{ width: '100%', height: '100%', borderRadius: 10 }} />
+                        </View>
 
-                        <Image source={require('@/assets/images/map.jpeg')} style={{ width: '100%', height: '100%' }} />
 
                         <View
-                            className="h-full border z-10 absolute bg-black/80 w-full p-3 gap-y-3 flex flex-row justify-between items-center">
+                            className="h-full z-10 absolute bg-black/20 dark:bg-black/80 w-full p-3 gap-y-3 flex flex-row justify-between items-center">
                             <View>
                                 <CText style={{ fontFamily: 'bold' }} className="text-[2rem]" textColor="text-buttons">Track Route</CText>
-                                <CText className="text-[20px]">Click to open map</CText>
+                                <CText style={{ fontFamily: 'bold' }} className="text-[20px]" textColor="text-white">Click to open map</CText>
                             </View>
 
-                            <View className="w-10 h-10 bg-black rounded-full flex justify-center items-center">
+                            <View className="w-10 h-10 bg-white dark:bg-black rounded-full flex justify-center items-center">
                                 <IconLibrary.angle_right />
                             </View>
                         </View>
@@ -174,7 +176,8 @@ function Dashboard() {
 
                 </ScrollView>
 
-                <MapBox mapdata={activeData} />
+                {/* <MapBox mapdata={activeData} /> */}
+                <Base />
 
             </View >
 

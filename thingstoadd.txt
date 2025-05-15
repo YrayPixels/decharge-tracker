@@ -1,0 +1,3 @@
+leaderboard
+settings to choose their data to share//done
+show the reward structure//done
