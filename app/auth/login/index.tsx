@@ -57,9 +57,6 @@ function Login() {
 
   const Login = async () => {
     if (loginType === 'number') {
-
-
-
       const fields = [];
       if (userDetails.mobileNumber === "") {
         fields.push("Mobile Number");
@@ -153,8 +150,6 @@ function Login() {
         setToast("Invalid Otp", 'error')
       }
     }
-
-
   }
 
   return (
